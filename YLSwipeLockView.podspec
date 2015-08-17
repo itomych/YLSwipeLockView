@@ -8,5 +8,5 @@ Pod::Spec.new do |spec|
   spec.authors     		 = { 'Xiao Yulong' => 'https://github.com/XiaoYulong/YLSwipeLockView.git' }
   spec.summary      		 = 'ARC LockPattern for iOS and OS X.'
   spec.source       		 = { :git => 'https://github.com/itomych/YLSwipeLockView.git', :branch => 'dev' }
-  spec.source_files 		 = 'YLSwipeLockView/*.(m,h)'
+  spec.source_files 		 = 'YLSwipeLockView/*.{m,h}'
 end
