@@ -19,29 +19,39 @@
 @end
 
 @implementation YLSwipeLockView
+
+-(id)initWithCoder:(NSCoder *)aDecoder{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self setupView];
+    }
+    return self;
+}
 -(id)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        
-        [self.layer addSublayer:self.polygonalLineLayer];
-        
-        _nodeArray = [NSMutableArray arrayWithCapacity:9];
-        for (int i = 0; i < 9; ++i) {
-            YLSwipeLockNodeView *nodeView = [YLSwipeLockNodeView new];
-            [_nodeArray addObject:nodeView];
-            nodeView.tag = i;
-            [self addSubview:nodeView];
-        }
-        _selectedNodeArray = [NSMutableArray arrayWithCapacity:9];
-        _pointArray = [NSMutableArray array];
-        
-        UIPanGestureRecognizer *panRec = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-        [self addGestureRecognizer:panRec];
-        self.viewState = YLSwipeLockNodeViewStatusNormal;
-        [self cleanNodes];
-        
+        [self setupView];
     }
     return self;
+}
+
+-(void)setupView{
+    [self.layer addSublayer:self.polygonalLineLayer];
+    
+    _nodeArray = [NSMutableArray arrayWithCapacity:9];
+    for (int i = 0; i < 9; ++i) {
+        YLSwipeLockNodeView *nodeView = [YLSwipeLockNodeView new];
+        [_nodeArray addObject:nodeView];
+        nodeView.tag = i;
+        [self addSubview:nodeView];
+    }
+    _selectedNodeArray = [NSMutableArray arrayWithCapacity:9];
+    _pointArray = [NSMutableArray array];
+    
+    UIPanGestureRecognizer *panRec = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+    [self addGestureRecognizer:panRec];
+    self.viewState = YLSwipeLockNodeViewStatusNormal;
+    [self cleanNodes];
 }
 
 -(void)pan:(UIPanGestureRecognizer *)rec
@@ -49,15 +59,17 @@
     if  (rec.state == UIGestureRecognizerStateBegan){
         self.viewState = YLSwipeLockNodeViewStatusNormal;
     }
-    
     CGPoint touchPoint = [rec locationInView:self];
     NSInteger index = [self indexForNodeAtPoint:touchPoint];
+    
+    
+
     if (index >= 0) {
         YLSwipeLockNodeView *node = self.nodeArray[index];
         
         if (![self addSelectedNode:node]) {
+            [self addIntermediateNode];
             [self moveLineWithFingerPosition:touchPoint];
-
         }
     }else{
         [self moveLineWithFingerPosition:touchPoint];
@@ -72,7 +84,9 @@
             for(YLSwipeLockNodeView *nodeView in self.selectedNodeArray){
                 NSString *index = [@(nodeView.tag) stringValue];
                 [password appendString:index];
+                
             }
+            
             self.viewState = [self.delegate swipeView:self didEndSwipeWithPassword:password];
             
         }
@@ -83,12 +97,76 @@
     
 }
 
+-(void)addIntermediateNode{
+    
+    if (self.selectedNodeArray.count<2) {
+        return;
+    }
+    YLSwipeLockNodeView *previousNode = [self.selectedNodeArray objectAtIndex:self.selectedNodeArray.count-2];
+    YLSwipeLockNodeView *lastNode = [self.selectedNodeArray lastObject];
+    
+    if (previousNode.center.x != lastNode.center.x && previousNode.center.y != lastNode.center.y) {
+        if ( fabs(lastNode.frame.origin.x-previousNode.frame.origin.x)  != fabs(lastNode.frame.origin.y-previousNode.frame.origin.y)) {
+            NSLog(@"return %f = %f",lastNode.frame.origin.x-previousNode.frame.origin.x,self.frame.size.width/3);
+            return;
+        }
+    }
+  
+    CGPoint newPointNode = CGPointMake(previousNode.center.x, previousNode.center.y);
+    
+    if (previousNode.center.x == lastNode.center.x ) {
+        newPointNode.x = previousNode.center.x;
+    }
+    if (previousNode.center.y == lastNode.center.y ) {
+        newPointNode.y = previousNode.center.y;
+    }
+    
+    if (previousNode.center.x >lastNode.center.x) {
+        newPointNode.x = self.frame.size.width/2 - previousNode.frame.size.height/2;
+    }
+    
+    if (lastNode.center.x >previousNode.center.x) {
+        newPointNode.x =   self.frame.size.width/2 - lastNode.frame.size.height/2;
+    }
+    
+    if (previousNode.center.y >lastNode.center.y) {
+        newPointNode.y =    [self returnWidthFrame]/2 - previousNode.frame.size.height/2;
+    }
+    
+    if (lastNode.center.y >previousNode.center.y) {
+        newPointNode.y =   [self returnWidthFrame]/2 - lastNode.frame.size.height/2;
+    }
+
+    NSInteger index = [self indexForNodeAtPoint:newPointNode];
+    if (index>0 ) {
+        YLSwipeLockNodeView *nodeNew = self.nodeArray[index];
+        if (![self.selectedNodeArray containsObject:nodeNew]) {
+            nodeNew.nodeViewStatus = YLSwipeLockNodeViewStatusSelected;
+            newPointNode = nodeNew.center;
+            [self.selectedNodeArray insertObject:nodeNew atIndex:self.selectedNodeArray.count-1];
+            [self.pointArray insertObject:[NSValue valueWithCGPoint:newPointNode] atIndex:self.selectedNodeArray.count-2];
+        }else{
+        }
+    }
+}
+
+
+-(CGFloat)returnWidthFrame{
+    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if (interfaceOrientation == UIInterfaceOrientationPortrait)
+    {
+        return self.frame.size.width;
+    }
+    else{
+        return self.frame.size.height;
+    }
+}
+
 -(BOOL)addSelectedNode:(YLSwipeLockNodeView *)nodeView
 {
     if (![self.selectedNodeArray containsObject:nodeView]) {
         nodeView.nodeViewStatus = YLSwipeLockNodeViewStatusSelected;
         [self.selectedNodeArray addObject:nodeView];
-        
         [self addLineToNode:nodeView];
         
         return YES;
@@ -101,8 +179,6 @@
 -(void)addLineToNode:(YLSwipeLockNodeView *)nodeView
 {
     if(self.selectedNodeArray.count == 1){
-        
-        //path move to start point
         CGPoint startPoint = nodeView.center;
         [self.polygonalLinePath moveToPoint:startPoint];
         [self.pointArray addObject:[NSValue valueWithCGPoint:startPoint]];
@@ -110,10 +186,10 @@
         
     }else{
         
-        //path add line to point
         [self.pointArray removeLastObject];
         CGPoint middlePoint = nodeView.center;
         [self.pointArray addObject:[NSValue valueWithCGPoint:middlePoint]];
+        
         
         [self.polygonalLinePath removeAllPoints];
         CGPoint startPoint = [self.pointArray[0] CGPointValue];
@@ -122,6 +198,7 @@
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
             [self.polygonalLinePath addLineToPoint:middlePoint];
+            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
         }
         self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
         
@@ -131,8 +208,10 @@
 
 -(void)moveLineWithFingerPosition:(CGPoint)touchPoint
 {
+  
     if (self.pointArray.count > 0) {
         if (self.pointArray.count > self.selectedNodeArray.count) {
+            CGPoint poit = (CGPoint)[[self.pointArray lastObject] CGPointValue];
             [self.pointArray removeLastObject];
         }
         [self.pointArray addObject:[NSValue valueWithCGPoint:touchPoint]];
@@ -142,17 +221,19 @@
         
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
+            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
             [self.polygonalLinePath addLineToPoint:middlePoint];
         }
         self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
-        
+    
     }
 }
-
 -(void)removeLastFingerPosition
 {
     if (self.pointArray.count > 0) {
         if (self.pointArray.count > self.selectedNodeArray.count) {
+            CGPoint poit = (CGPoint)[[self.pointArray lastObject] CGPointValue];
+            NSLog(@"self.pointArray1 %f self.pointArray %f",poit.x,poit.y);
             [self.pointArray removeLastObject];
         }
         [self.polygonalLinePath removeAllPoints];
@@ -161,6 +242,7 @@
         
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
+            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
             [self.polygonalLinePath addLineToPoint:middlePoint];
         }
         self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
@@ -179,16 +261,15 @@
     maskLayer.lineWidth = 1.0f;
     maskLayer.strokeColor = [UIColor blackColor].CGColor;
     maskLayer.fillColor = [UIColor blackColor].CGColor;
-    //TODO: here should be more decent
     for (int i = 0; i < self.nodeArray.count; ++i) {
         YLSwipeLockNodeView *nodeView = _nodeArray[i];
-        // TODO: change to use MIN marco in the future
         CGFloat min = self.bounds.size.width < self.bounds.size.height ? self.bounds.size.width : self.bounds.size.height;
         CGFloat width = min / 5;
         CGFloat height = min / 5;
+        CGFloat offsetCentre = self.bounds.size.width < self.bounds.size.height ? 0 : (self.bounds.size.width -self.bounds.size.height)/2;
         int row = i % 3;
         int column = i / 3;
-        CGRect frame = CGRectMake(row *(width * 2), column * (width *2), width, height);
+        CGRect frame = CGRectMake(row *(width * 2)+offsetCentre , column * (width *2), width, height);
         nodeView.frame = frame;
         [maskPath appendPath:[UIBezierPath bezierPathWithOvalInRect:frame]];
     }
@@ -243,7 +324,7 @@
 {
     if (_polygonalLineLayer == nil) {
         _polygonalLineLayer = [[CAShapeLayer alloc] init];
-        _polygonalLineLayer.lineWidth = 1.0f;
+        _polygonalLineLayer.lineWidth = LINEWidth;
         _polygonalLineLayer.strokeColor = LIGHTBLUE.CGColor;
         _polygonalLineLayer.fillColor = [UIColor clearColor].CGColor;
     }

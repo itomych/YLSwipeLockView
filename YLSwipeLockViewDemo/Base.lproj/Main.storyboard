@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+    </dependencies>
+    <scenes>
+        <!--Init Swipe Password Controller-->
+        <scene sceneID="ORs-AF-a2J">
+            <objects>
+                <viewController storyboardIdentifier="YLInitSwipePasswordController" id="oLS-7f-I2d" customClass="YLInitSwipePasswordController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="f4a-zg-swJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="4bv-mX-1fb"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bCT-sS-BKY">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6B0-Uo-olR" customClass="YLSwipeLockView">
+                                <rect key="frame" x="0.0" y="100" width="600" height="500"/>
+                                <color key="backgroundColor" red="0.13725490196078433" green="0.15294117647058825" blue="0.21176470588235294" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="6B0-Uo-olR" secondAttribute="trailing" id="U5H-c2-7Vz"/>
+                            <constraint firstItem="6B0-Uo-olR" firstAttribute="leading" secondItem="bCT-sS-BKY" secondAttribute="leading" id="X3b-dV-jEv"/>
+                            <constraint firstItem="4bv-mX-1fb" firstAttribute="top" secondItem="6B0-Uo-olR" secondAttribute="bottom" id="baG-fH-4sI"/>
+                            <constraint firstItem="6B0-Uo-olR" firstAttribute="top" secondItem="f4a-zg-swJ" secondAttribute="bottom" constant="80" id="khY-AP-tgL"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="lockView" destination="6B0-Uo-olR" id="Gg5-0O-1CG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7CL-Zt-Ljw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="349" y="375"/>
+        </scene>
+    </scenes>
+</document>

@@ -42,8 +42,13 @@
 
 -(void)setButtonBeTouched
 {
-    YLInitSwipePasswordController *controller = [YLInitSwipePasswordController new];
-    [self presentViewController:controller animated:YES completion:nil];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main"
+                                                         bundle: nil];
+    YLInitSwipePasswordController *vc = [storyboard instantiateViewControllerWithIdentifier:@"YLInitSwipePasswordController"];
+    
+    [self presentViewController:vc animated:YES completion:nil];
+//    YLInitSwipePasswordController *controller = [YLInitSwipePasswordController new];
+//    [self presentViewController:controller animated:YES completion:nil];
 }
 
 -(void)checkButtonBeTouched

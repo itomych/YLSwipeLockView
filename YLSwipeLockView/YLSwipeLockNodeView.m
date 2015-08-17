@@ -8,6 +8,8 @@
 
 #import "YLSwipeLockNodeView.h"
 #import "YLSwipeLockView.h"
+
+#define LINEWidth 2.0f
 @interface YLSwipeLockNodeView()
 @property (nonatomic, strong)CAShapeLayer *outlineLayer;
 @property (nonatomic, strong)CAShapeLayer *innerCircleLayer;
@@ -28,7 +30,6 @@
 
 -(void)pan:(UIPanGestureRecognizer *)rec
 {
-    NSLog(@"what the fuck");
     CGPoint point = [rec locationInView:self];
     NSLog(@"location in view:%f, %f", point.x, point.y);
     self.nodeViewStatus = YLSwipeLockNodeViewStatusSelected;
@@ -54,8 +55,11 @@
 
 -(void)setStatusToNormal
 {
-    self.outlineLayer.strokeColor = [UIColor whiteColor].CGColor;
-    self.innerCircleLayer.fillColor = [UIColor clearColor].CGColor;
+    self.outlineLayer.strokeColor = [UIColor clearColor].CGColor;
+    self.innerCircleLayer.fillColor = [UIColor whiteColor].CGColor;
+    self.outlineLayer.strokeColor = [UIColor clearColor].CGColor;
+    
+    
 }
 
 -(void)setStatusToSelected
@@ -79,8 +83,9 @@
     self.outlineLayer.path = outlinePath.CGPath;
     
     CGRect frame = self.bounds;
-    CGFloat width = frame.size.width / 3;
-    self.innerCircleLayer.frame = CGRectMake(width, width, width, width);
+    CGFloat width = frame.size.width / 2;
+    CGFloat widthOffset = width/2 ;
+    self.innerCircleLayer.frame = CGRectMake(width-widthOffset, width-widthOffset, width, width);
     UIBezierPath *innerPath = [UIBezierPath bezierPathWithOvalInRect:self.innerCircleLayer.bounds];
     self.innerCircleLayer.path = innerPath.CGPath;
 
@@ -91,7 +96,7 @@
     if (_outlineLayer == nil) {
         _outlineLayer = [[CAShapeLayer alloc] init];
         _outlineLayer.strokeColor = LIGHTBLUE.CGColor;
-        _outlineLayer.lineWidth = 1.0f;
+        _outlineLayer.lineWidth = LINEWidth;
         _outlineLayer.fillColor  = [UIColor clearColor].CGColor;
     }
     return _outlineLayer;
@@ -102,18 +107,10 @@
     if (_innerCircleLayer == nil) {
         _innerCircleLayer = [[CAShapeLayer alloc] init];
         _innerCircleLayer.strokeColor = [UIColor clearColor].CGColor;
-        _innerCircleLayer.lineWidth = 1.0f;
+        _innerCircleLayer.lineWidth = LINEWidth;
         _innerCircleLayer.fillColor  = LIGHTBLUE.CGColor;
     }
     return _innerCircleLayer;
 }
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end
