@@ -55,6 +55,10 @@
 
 -(void)pan:(UIPanGestureRecognizer *)rec
 {
+    if (self.viewState == YLSwipeLockViewStateSelected) {
+        return;
+    }
+    
     if  (rec.state == UIGestureRecognizerStateBegan){
         self.viewState = YLSwipeLockNodeViewStatusNormal;
     }
@@ -62,7 +66,6 @@
     NSInteger index = [self indexForNodeAtPoint:touchPoint];
     
     
-
     if (index >= 0) {
         YLSwipeLockNodeView *node = self.nodeArray[index];
         
@@ -175,6 +178,34 @@
     
 }
 
+-(void)addLineToNodeTest:(YLSwipeLockNodeView *)nodeView
+{
+    if(self.selectedNodeArray.count == 1){
+        CGPoint startPoint = nodeView.center;
+        [self.polygonalLinePath moveToPoint:startPoint];
+        [self.pointArray addObject:[NSValue valueWithCGPoint:startPoint]];
+        self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
+        
+    }else{
+        
+        CGPoint middlePoint = nodeView.center;
+        [self.pointArray addObject:[NSValue valueWithCGPoint:middlePoint]];
+        
+        [self.polygonalLinePath removeAllPoints];
+        CGPoint startPoint = [self.pointArray[0] CGPointValue];
+        [self.polygonalLinePath moveToPoint:startPoint];
+        
+        for (int i = 1; i < self.pointArray.count; ++i) {
+            CGPoint middlePoint = [self.pointArray[i] CGPointValue];
+            [self.polygonalLinePath addLineToPoint:middlePoint];
+            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
+        }
+        self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
+        
+    }
+    
+}
+
 -(void)addLineToNode:(YLSwipeLockNodeView *)nodeView
 {
     if(self.selectedNodeArray.count == 1){
@@ -210,7 +241,6 @@
   
     if (self.pointArray.count > 0) {
         if (self.pointArray.count > self.selectedNodeArray.count) {
-            CGPoint poit = (CGPoint)[[self.pointArray lastObject] CGPointValue];
             [self.pointArray removeLastObject];
         }
         [self.pointArray addObject:[NSValue valueWithCGPoint:touchPoint]];
@@ -249,6 +279,16 @@
     }
 }
 
+-(void)moveLineForChangeOrientation{
+    NSArray *arrayObj = [[NSArray alloc]initWithArray:self.selectedNodeArray];
+    [self cleanNodes];
+    for (YLSwipeLockNodeView *nodeView in arrayObj) {
+        nodeView.nodeViewStatus = YLSwipeLockNodeViewStatusSelected;
+        [self.selectedNodeArray addObject:nodeView];
+        [self addLineToNodeTest:nodeView];
+    }
+}
+
 -(void)layoutSubviews{
     
     self.polygonalLineLayer.frame = self.bounds;
@@ -275,6 +315,8 @@
     
     maskLayer.path = maskPath.CGPath;
     self.polygonalLineLayer.mask = maskLayer;
+    
+    [self moveLineForChangeOrientation];
 }
 
 -(NSInteger)indexForNodeAtPoint:(CGPoint)point

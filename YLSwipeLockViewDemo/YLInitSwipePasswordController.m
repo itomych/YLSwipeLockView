@@ -32,13 +32,6 @@
     [self.view addSubview:titleLabel];
     self.titleLabel = titleLabel;
     
-    CGFloat viewWidth = self.view.bounds.size.width - 40;
-    CGFloat viewHeight = viewWidth;
-    
-//    YLSwipeLockView *lockView = [[YLSwipeLockView alloc] initWithFrame:CGRectMake(20, self.view.bounds.size.height - viewHeight - 40 - 100, viewWidth, viewHeight)];
-//    [self.view addSubview:lockView];
-    
-//    self.lockView = lockView;
     self.lockView.delegate = self;
     
     UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 60, 60, 40, 20)];
