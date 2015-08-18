@@ -15,7 +15,6 @@
 @property (nonatomic, strong) UIBezierPath *polygonalLinePath;
 @property (nonatomic, strong) NSMutableArray *pointArray;
 
-@property (nonatomic) YLSwipeLockViewState viewState;
 @end
 
 @implementation YLSwipeLockView
@@ -301,7 +300,7 @@
     [self.selectedNodeArray removeAllObjects];
     [self.pointArray removeAllObjects];
     self.polygonalLinePath = [UIBezierPath new];
-    self.polygonalLineLayer.strokeColor = LIGHTBLUE.CGColor;
+    self.polygonalLineLayer.strokeColor =  [UIColor whiteColor].CGColor;
     self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
 }
 
@@ -325,7 +324,7 @@
     if (_polygonalLineLayer == nil) {
         _polygonalLineLayer = [[CAShapeLayer alloc] init];
         _polygonalLineLayer.lineWidth = LINEWidth;
-        _polygonalLineLayer.strokeColor = LIGHTBLUE.CGColor;
+        _polygonalLineLayer.strokeColor = [UIColor whiteColor].CGColor;
         _polygonalLineLayer.fillColor = [UIColor clearColor].CGColor;
     }
     return _polygonalLineLayer;

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#define LIGHTBLUE [UIColor colorWithRed:0 green:170/255.0 blue:1 alpha:1]
+#define LIGHTBLUE [UIColor colorWithRed:0.101 green:0.777 blue:0.467 alpha:1]
 #define LINEWidth 2.0f
 
 typedef NS_ENUM(NSUInteger, YLSwipeLockViewState) {
@@ -19,6 +19,7 @@ typedef NS_ENUM(NSUInteger, YLSwipeLockViewState) {
 
 @interface YLSwipeLockView : UIView
 @property (nonatomic, weak) id<YLSwipeLockViewDelegate> delegate;
+@property (nonatomic) YLSwipeLockViewState viewState;
 @end
 
 

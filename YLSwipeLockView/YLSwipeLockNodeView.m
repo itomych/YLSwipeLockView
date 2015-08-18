@@ -64,8 +64,8 @@
 
 -(void)setStatusToSelected
 {
-    self.outlineLayer.strokeColor = LIGHTBLUE.CGColor;
-    self.innerCircleLayer.fillColor = LIGHTBLUE.CGColor;
+    self.outlineLayer.strokeColor = [UIColor whiteColor].CGColor;
+    self.innerCircleLayer.fillColor =  [UIColor whiteColor].CGColor;
 }
 
 -(void)setStatusToWarning
@@ -95,7 +95,7 @@
 {
     if (_outlineLayer == nil) {
         _outlineLayer = [[CAShapeLayer alloc] init];
-        _outlineLayer.strokeColor = LIGHTBLUE.CGColor;
+        _outlineLayer.strokeColor =  [UIColor whiteColor].CGColor;
         _outlineLayer.lineWidth = LINEWidth;
         _outlineLayer.fillColor  = [UIColor clearColor].CGColor;
     }
@@ -108,7 +108,7 @@
         _innerCircleLayer = [[CAShapeLayer alloc] init];
         _innerCircleLayer.strokeColor = [UIColor clearColor].CGColor;
         _innerCircleLayer.lineWidth = LINEWidth;
-        _innerCircleLayer.fillColor  = LIGHTBLUE.CGColor;
+        _innerCircleLayer.fillColor  =  [UIColor whiteColor].CGColor;
     }
     return _innerCircleLayer;
 }
