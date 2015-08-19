@@ -20,6 +20,8 @@ typedef NS_ENUM(NSUInteger, YLSwipeLockViewState) {
 @interface YLSwipeLockView : UIView
 @property (nonatomic, weak) id<YLSwipeLockViewDelegate> delegate;
 @property (nonatomic) YLSwipeLockViewState viewState;
+
+-(void)moveLineForChangeOrientation;
 @end
 
 

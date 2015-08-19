@@ -88,4 +88,8 @@
     self.resetButton.hidden = YES;
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation{
+    [self.lockView moveLineForChangeOrientation];
+}
+
 @end

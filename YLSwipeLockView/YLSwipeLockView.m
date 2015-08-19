@@ -8,7 +8,9 @@
 
 #import "YLSwipeLockView.h"
 #import "YLSwipeLockNodeView.h"
-@interface YLSwipeLockView()
+@interface YLSwipeLockView(){
+    NSArray *arrayObjSelect;
+}
 @property (nonatomic, strong) NSMutableArray *nodeArray;
 @property (nonatomic, strong) NSMutableArray *selectedNodeArray;
 @property (nonatomic, strong) CAShapeLayer *polygonalLineLayer;
@@ -194,7 +196,6 @@
         [self.polygonalLinePath removeAllPoints];
         CGPoint startPoint = [self.pointArray[0] CGPointValue];
         [self.polygonalLinePath moveToPoint:startPoint];
-        
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
             [self.polygonalLinePath addLineToPoint:middlePoint];
@@ -280,9 +281,12 @@
 }
 
 -(void)moveLineForChangeOrientation{
-    NSArray *arrayObj = [[NSArray alloc]initWithArray:self.selectedNodeArray];
+    if (self.selectedNodeArray.count) {
+        arrayObjSelect = nil;
+        arrayObjSelect = [[NSArray alloc]initWithArray:self.selectedNodeArray];
+    }
     [self cleanNodes];
-    for (YLSwipeLockNodeView *nodeView in arrayObj) {
+    for (YLSwipeLockNodeView *nodeView in arrayObjSelect) {
         nodeView.nodeViewStatus = YLSwipeLockNodeViewStatusSelected;
         [self.selectedNodeArray addObject:nodeView];
         [self addLineToNodeTest:nodeView];
@@ -291,7 +295,9 @@
 
 -(void)layoutSubviews{
     
+
     self.polygonalLineLayer.frame = self.bounds;
+ 
     CAShapeLayer *maskLayer = [CAShapeLayer new];
     maskLayer.frame = self.bounds;
     
@@ -312,11 +318,13 @@
         nodeView.frame = frame;
         [maskPath appendPath:[UIBezierPath bezierPathWithOvalInRect:frame]];
     }
+    arrayObjSelect = nil;
+    arrayObjSelect = [[NSArray alloc]initWithArray:self.selectedNodeArray];
+    [self cleanNodes];
     
     maskLayer.path = maskPath.CGPath;
     self.polygonalLineLayer.mask = maskLayer;
-    
-    [self moveLineForChangeOrientation];
+
 }
 
 -(NSInteger)indexForNodeAtPoint:(CGPoint)point
