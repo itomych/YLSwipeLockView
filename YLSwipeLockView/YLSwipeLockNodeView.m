@@ -17,6 +17,19 @@
 
 
 @implementation YLSwipeLockNodeView
+
++(void)initialize{
+    
+    if (self != [YLSwipeLockNodeView class]) {
+        return;
+    }
+    YLSwipeLockNodeView *appearance= [self appearance];
+    
+    appearance.nodeColourNormal  = [UIColor whiteColor];
+    appearance.nodeColourSelect  = [UIColor whiteColor];
+    appearance.nodeColourWarning = [UIColor redColor];
+}
+
 -(id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -56,22 +69,19 @@
 -(void)setStatusToNormal
 {
     self.outlineLayer.strokeColor = [UIColor clearColor].CGColor;
-    self.innerCircleLayer.fillColor = [UIColor whiteColor].CGColor;
-    self.outlineLayer.strokeColor = [UIColor clearColor].CGColor;
-    
-    
+    self.innerCircleLayer.fillColor = self.nodeColourNormal.CGColor;
 }
 
 -(void)setStatusToSelected
 {
-    self.outlineLayer.strokeColor = [UIColor whiteColor].CGColor;
-    self.innerCircleLayer.fillColor =  [UIColor whiteColor].CGColor;
+    self.outlineLayer.strokeColor =self.nodeColourSelect.CGColor;
+    self.innerCircleLayer.fillColor =  self.nodeColourSelect.CGColor;
 }
 
 -(void)setStatusToWarning
 {
-    self.outlineLayer.strokeColor = [UIColor redColor].CGColor;
-    self.innerCircleLayer.fillColor = [UIColor redColor].CGColor;
+    self.outlineLayer.strokeColor = self.nodeColourWarning.CGColor;
+    self.innerCircleLayer.fillColor = self.nodeColourWarning.CGColor;
     
 }
 
@@ -95,9 +105,10 @@
 {
     if (_outlineLayer == nil) {
         _outlineLayer = [[CAShapeLayer alloc] init];
-        _outlineLayer.strokeColor =  [UIColor whiteColor].CGColor;
+        _outlineLayer.strokeColor =  self.nodeColourNormal.CGColor;
         _outlineLayer.lineWidth = LINEWidth;
         _outlineLayer.fillColor  = [UIColor clearColor].CGColor;
+
     }
     return _outlineLayer;
 }
@@ -108,7 +119,8 @@
         _innerCircleLayer = [[CAShapeLayer alloc] init];
         _innerCircleLayer.strokeColor = [UIColor clearColor].CGColor;
         _innerCircleLayer.lineWidth = LINEWidth;
-        _innerCircleLayer.fillColor  =  [UIColor whiteColor].CGColor;
+        _innerCircleLayer.fillColor  =  self.nodeColourNormal.CGColor;
+
     }
     return _innerCircleLayer;
 }

@@ -14,6 +14,9 @@ typedef NS_ENUM(NSUInteger, YLSwipeLockNodeViewStatus) {
 };
 
 @interface YLSwipeLockNodeView : UIView
-@property (nonatomic) YLSwipeLockNodeViewStatus nodeViewStatus;
 
+@property (nonatomic) YLSwipeLockNodeViewStatus nodeViewStatus;
+@property (nonatomic, strong) UIColor *nodeColourNormal;
+@property (nonatomic, strong) UIColor *nodeColourSelect;
+@property (nonatomic, strong) UIColor *nodeColourWarning;
 @end

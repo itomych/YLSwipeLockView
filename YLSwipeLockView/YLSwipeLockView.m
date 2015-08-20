@@ -20,6 +20,16 @@
 @end
 
 @implementation YLSwipeLockView
++(void)initialize{
+    
+    if (self != [YLSwipeLockView class]) {
+        return;
+    }
+    YLSwipeLockView *appearance= [self appearance];
+    
+    appearance.lineColourNormal = [UIColor whiteColor];
+    appearance.lineColourWarning = [UIColor redColor];
+}
 
 -(id)initWithCoder:(NSCoder *)aDecoder{
     self = [super initWithCoder:aDecoder];
@@ -303,7 +313,7 @@
     
     UIBezierPath *maskPath = [UIBezierPath bezierPathWithRect:self.bounds];
     maskLayer.fillRule = kCAFillRuleEvenOdd;
-    maskLayer.lineWidth = 1.0f;
+    maskLayer.lineWidth = LINEWidth;
     maskLayer.strokeColor = [UIColor blackColor].CGColor;
     maskLayer.fillColor = [UIColor blackColor].CGColor;
     for (int i = 0; i < self.nodeArray.count; ++i) {
@@ -350,7 +360,7 @@
     [self.selectedNodeArray removeAllObjects];
     [self.pointArray removeAllObjects];
     self.polygonalLinePath = [UIBezierPath new];
-    self.polygonalLineLayer.strokeColor =  [UIColor whiteColor].CGColor;
+    self.polygonalLineLayer.strokeColor =  self.lineColourNormal.CGColor;
     self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
 }
 
@@ -366,7 +376,7 @@
         YLSwipeLockNodeView *node = self.selectedNodeArray[i];
         node.nodeViewStatus = YLSwipeLockNodeViewStatusWarning;
     }
-    self.polygonalLineLayer.strokeColor = [UIColor redColor].CGColor;
+    self.polygonalLineLayer.strokeColor = self.lineColourWarning.CGColor;
 }
 
 -(CAShapeLayer *)polygonalLineLayer
@@ -374,7 +384,7 @@
     if (_polygonalLineLayer == nil) {
         _polygonalLineLayer = [[CAShapeLayer alloc] init];
         _polygonalLineLayer.lineWidth = LINEWidth;
-        _polygonalLineLayer.strokeColor = [UIColor whiteColor].CGColor;
+        _polygonalLineLayer.strokeColor = self.lineColourNormal.CGColor;
         _polygonalLineLayer.fillColor = [UIColor clearColor].CGColor;
     }
     return _polygonalLineLayer;
