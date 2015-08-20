@@ -22,6 +22,7 @@ typedef NS_ENUM(NSUInteger, YLSwipeLockViewState) {
 @property (nonatomic) YLSwipeLockViewState viewState;
 @property (nonatomic, strong) UIColor *lineColourNormal;
 @property (nonatomic, strong) UIColor *lineColourWarning;
+@property (nonatomic) CGFloat lineWidth;
 
 -(void)moveLineForChangeOrientation;
 @end

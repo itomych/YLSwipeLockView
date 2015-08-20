@@ -19,4 +19,5 @@ typedef NS_ENUM(NSUInteger, YLSwipeLockNodeViewStatus) {
 @property (nonatomic, strong) UIColor *nodeColourNormal;
 @property (nonatomic, strong) UIColor *nodeColourSelect;
 @property (nonatomic, strong) UIColor *nodeColourWarning;
+@property (nonatomic) CGFloat lineWidthNode;
 @end

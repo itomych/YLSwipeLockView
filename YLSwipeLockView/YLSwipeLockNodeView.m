@@ -9,7 +9,7 @@
 #import "YLSwipeLockNodeView.h"
 #import "YLSwipeLockView.h"
 
-#define LINEWidth 2.0f
+//#define LINEWidth 2.0f
 @interface YLSwipeLockNodeView()
 @property (nonatomic, strong)CAShapeLayer *outlineLayer;
 @property (nonatomic, strong)CAShapeLayer *innerCircleLayer;
@@ -28,12 +28,14 @@
     appearance.nodeColourNormal  = [UIColor whiteColor];
     appearance.nodeColourSelect  = [UIColor whiteColor];
     appearance.nodeColourWarning = [UIColor redColor];
+    appearance.lineWidthNode     = 2.0f;
 }
 
 -(id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.lineWidthNode = [[[self class]appearance]lineWidthNode];
         [self.layer addSublayer:self.outlineLayer];
         [self.layer addSublayer:self.innerCircleLayer];
         self.nodeViewStatus = YLSwipeLockNodeViewStatusNormal;
@@ -106,7 +108,8 @@
     if (_outlineLayer == nil) {
         _outlineLayer = [[CAShapeLayer alloc] init];
         _outlineLayer.strokeColor =  self.nodeColourNormal.CGColor;
-        _outlineLayer.lineWidth = LINEWidth;
+        NSLog(@"lineWidthNode = %f",self.lineWidthNode);
+        _outlineLayer.lineWidth = self.lineWidthNode;
         _outlineLayer.fillColor  = [UIColor clearColor].CGColor;
 
     }
@@ -118,7 +121,8 @@
     if (_innerCircleLayer == nil) {
         _innerCircleLayer = [[CAShapeLayer alloc] init];
         _innerCircleLayer.strokeColor = [UIColor clearColor].CGColor;
-        _innerCircleLayer.lineWidth = LINEWidth;
+         NSLog(@"lineWidthNode = %f",self.lineWidthNode);
+        _innerCircleLayer.lineWidth = self.lineWidthNode;
         _innerCircleLayer.fillColor  =  self.nodeColourNormal.CGColor;
 
     }

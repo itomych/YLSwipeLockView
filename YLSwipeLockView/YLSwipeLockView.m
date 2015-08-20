@@ -29,6 +29,7 @@
     
     appearance.lineColourNormal = [UIColor whiteColor];
     appearance.lineColourWarning = [UIColor redColor];
+    appearance.lineWidth = 2.0f;
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder{
@@ -47,6 +48,7 @@
 }
 
 -(void)setupView{
+    self.lineWidth = [[[self class]appearance]lineWidth];
     [self.layer addSublayer:self.polygonalLineLayer];
     
     _nodeArray = [NSMutableArray arrayWithCapacity:9];
@@ -209,7 +211,7 @@
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
             [self.polygonalLinePath addLineToPoint:middlePoint];
-            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
+//            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
         }
         self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
         
@@ -239,7 +241,7 @@
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
             [self.polygonalLinePath addLineToPoint:middlePoint];
-            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
+//            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
         }
         self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
         
@@ -261,7 +263,7 @@
         
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
-            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
+//            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
             [self.polygonalLinePath addLineToPoint:middlePoint];
         }
         self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
@@ -282,7 +284,7 @@
         
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
-            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
+//            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
             [self.polygonalLinePath addLineToPoint:middlePoint];
         }
         self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
@@ -313,7 +315,7 @@
     
     UIBezierPath *maskPath = [UIBezierPath bezierPathWithRect:self.bounds];
     maskLayer.fillRule = kCAFillRuleEvenOdd;
-    maskLayer.lineWidth = LINEWidth;
+    maskLayer.lineWidth = self.lineWidth;
     maskLayer.strokeColor = [UIColor blackColor].CGColor;
     maskLayer.fillColor = [UIColor blackColor].CGColor;
     for (int i = 0; i < self.nodeArray.count; ++i) {
@@ -383,7 +385,7 @@
 {
     if (_polygonalLineLayer == nil) {
         _polygonalLineLayer = [[CAShapeLayer alloc] init];
-        _polygonalLineLayer.lineWidth = LINEWidth;
+        _polygonalLineLayer.lineWidth = self.lineWidth;
         _polygonalLineLayer.strokeColor = self.lineColourNormal.CGColor;
         _polygonalLineLayer.fillColor = [UIColor clearColor].CGColor;
     }
