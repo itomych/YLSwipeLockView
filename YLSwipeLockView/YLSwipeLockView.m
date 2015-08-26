@@ -330,8 +330,11 @@
         nodeView.frame = frame;
         [maskPath appendPath:[UIBezierPath bezierPathWithOvalInRect:frame]];
     }
-    arrayObjSelect = nil;
-    arrayObjSelect = [[NSArray alloc]initWithArray:self.selectedNodeArray];
+    if ([self.selectedNodeArray count]) {
+        arrayObjSelect = nil;
+        arrayObjSelect = [[NSArray alloc]initWithArray:self.selectedNodeArray];
+        
+    }
     [self cleanNodes];
     
     maskLayer.path = maskPath.CGPath;

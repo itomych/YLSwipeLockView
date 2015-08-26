@@ -52,7 +52,7 @@
     if (self.passwordString == nil) {
         self.passwordString = password;
         self.titleLabel.text = @"confirm your gesture password again";
-        return YLSwipeLockViewStateNormal;
+        return YLSwipeLockViewStateSelected;
     }else if ([self.passwordString isEqualToString:password]){
         self.titleLabel.text = @"set succeed";
         self.passwordString = nil;
