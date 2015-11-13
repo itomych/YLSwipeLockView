@@ -8,6 +8,27 @@
 
 #import "YLSwipeLockView.h"
 #import "YLSwipeLockNodeView.h"
+
+bool YLLineIntersectsNode(CGPoint point1, CGPoint point2, CGPoint center, CGFloat radius) {
+    CGFloat x1 = point1.x - center.x;
+    CGFloat y1 = point1.y - center.y;
+    CGFloat x2 = point2.x - center.x;
+    CGFloat y2 = point2.y - center.y;
+    
+    CGFloat dx = x2 - x1;
+    CGFloat dy = y2 - y1;
+    
+    CGFloat a = dx * dx + dy * dy;
+    CGFloat b = 2 * (x1 * dx + y1 * dy);
+    CGFloat c = x1 * x1 + y1 * y1 - radius * radius;
+    
+    if (-b < 0)
+        return (c < 0);
+    if (-b < (2 * a))
+        return ((4 * a * c - b * b) < 0);
+    return (a + b + c < 0);
+}
+
 @interface YLSwipeLockView(){
     NSArray *arrayObjSelect;
 }
@@ -113,68 +134,23 @@
     
 }
 
--(void)addIntermediateNode{
-    
-    if (self.selectedNodeArray.count<2) {
+-(void)addIntermediateNode {
+    if (self.selectedNodeArray.count < 2) {
         return;
     }
+    
     YLSwipeLockNodeView *previousNode = [self.selectedNodeArray objectAtIndex:self.selectedNodeArray.count-2];
     YLSwipeLockNodeView *lastNode = [self.selectedNodeArray lastObject];
     
-    if (previousNode.center.x != lastNode.center.x && previousNode.center.y != lastNode.center.y) {
-        if ( fabs(lastNode.frame.origin.x-previousNode.frame.origin.x)  != fabs(lastNode.frame.origin.y-previousNode.frame.origin.y)) {
-            NSLog(@"return %f = %f",lastNode.frame.origin.x-previousNode.frame.origin.x,self.frame.size.width/3);
-            return;
+    for (YLSwipeLockNodeView *node in self.nodeArray) {
+        if ([self.selectedNodeArray containsObject:node]) {
+            continue;
         }
-    }
-  
-    CGPoint newPointNode = CGPointMake(previousNode.center.x, previousNode.center.y);
-    
-    if (previousNode.center.x == lastNode.center.x ) {
-        newPointNode.x = previousNode.center.x;
-    }
-    if (previousNode.center.y == lastNode.center.y ) {
-        newPointNode.y = previousNode.center.y;
-    }
-    
-    if (previousNode.center.x >lastNode.center.x) {
-        newPointNode.x = self.frame.size.width/2 - previousNode.frame.size.height/2;
-    }
-    
-    if (lastNode.center.x >previousNode.center.x) {
-        newPointNode.x =   self.frame.size.width/2 - lastNode.frame.size.height/2;
-    }
-    
-    if (previousNode.center.y >lastNode.center.y) {
-        newPointNode.y =    [self returnWidthFrame]/2 - previousNode.frame.size.height/2;
-    }
-    
-    if (lastNode.center.y >previousNode.center.y) {
-        newPointNode.y =   [self returnWidthFrame]/2 - lastNode.frame.size.height/2;
-    }
-
-    NSInteger index = [self indexForNodeAtPoint:newPointNode];
-    if (index>0 ) {
-        YLSwipeLockNodeView *nodeNew = self.nodeArray[index];
-        if (![self.selectedNodeArray containsObject:nodeNew]) {
-            nodeNew.nodeViewStatus = YLSwipeLockNodeViewStatusSelected;
-            newPointNode = nodeNew.center;
-            [self.selectedNodeArray insertObject:nodeNew atIndex:self.selectedNodeArray.count-1];
-            [self.pointArray insertObject:[NSValue valueWithCGPoint:newPointNode] atIndex:self.selectedNodeArray.count-2];
-        }else{
+        if (YLLineIntersectsNode(previousNode.center, lastNode.center, node.center, node.bounds.size.width / 2)) {
+            node.nodeViewStatus = YLSwipeLockNodeViewStatusSelected;
+            [self.selectedNodeArray insertObject:node atIndex:self.selectedNodeArray.count - 2];
+            [self.pointArray insertObject:[NSValue valueWithCGPoint:node.center] atIndex:self.selectedNodeArray.count-2];
         }
-    }
-}
-
-
--(CGFloat)returnWidthFrame{
-    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if (interfaceOrientation == UIInterfaceOrientationPortrait)
-    {
-        return self.frame.size.width;
-    }
-    else{
-        return self.frame.size.height;
     }
 }
 
@@ -211,7 +187,6 @@
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
             [self.polygonalLinePath addLineToPoint:middlePoint];
-//            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
         }
         self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
         
@@ -241,7 +216,6 @@
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
             [self.polygonalLinePath addLineToPoint:middlePoint];
-//            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
         }
         self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
         
@@ -263,7 +237,6 @@
         
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
-//            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
             [self.polygonalLinePath addLineToPoint:middlePoint];
         }
         self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
@@ -274,8 +247,6 @@
 {
     if (self.pointArray.count > 0) {
         if (self.pointArray.count > self.selectedNodeArray.count) {
-            CGPoint poit = (CGPoint)[[self.pointArray lastObject] CGPointValue];
-            NSLog(@"self.pointArray1 %f self.pointArray %f",poit.x,poit.y);
             [self.pointArray removeLastObject];
         }
         [self.polygonalLinePath removeAllPoints];
@@ -284,7 +255,6 @@
         
         for (int i = 1; i < self.pointArray.count; ++i) {
             CGPoint middlePoint = [self.pointArray[i] CGPointValue];
-//            NSLog(@"middlePoint.x %f,middlePoint.y %f ",middlePoint.x, middlePoint.y);
             [self.polygonalLinePath addLineToPoint:middlePoint];
         }
         self.polygonalLineLayer.path = self.polygonalLinePath.CGPath;
