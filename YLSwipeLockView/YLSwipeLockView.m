@@ -264,7 +264,7 @@ bool YLLineIntersectsNode(CGPoint point1, CGPoint point2, CGPoint center, CGFloa
 
 -(void)moveLineForChangeOrientation{
     
-    if (self.viewState == YLSwipeLockNodeViewStatusSelected) {
+    if (self.viewState == YLSwipeLockViewStateSelected) {
         if (self.selectedNodeArray.count) {
             arrayObjSelect = nil;
             arrayObjSelect = [[NSArray alloc]initWithArray:self.selectedNodeArray];
