@@ -149,7 +149,7 @@ bool YLLineIntersectsNode(CGPoint point1, CGPoint point2, CGPoint center, CGFloa
         if (YLLineIntersectsNode(previousNode.center, lastNode.center, node.center, node.bounds.size.width / 2)) {
             node.nodeViewStatus = YLSwipeLockNodeViewStatusSelected;
             [self.selectedNodeArray insertObject:node atIndex:self.selectedNodeArray.count-1];
-            [self.pointArray insertObject:[NSValue valueWithCGPoint:node.center] atIndex:self.selectedNodeArray.count-1];
+            [self.pointArray insertObject:[NSValue valueWithCGPoint:node.center] atIndex:self.selectedNodeArray.count-2];
         }
     }
 }
